@@ -31,7 +31,7 @@ def open_folder(path: Path):
 
 def get_unique_filepath(path: Path) -> Path:
     """
-    NEW: Checks if a file path exists. If it does, appends a counter.
+    Checks if a file path exists. If it does, appends a counter.
     e.g., 'file.pdf' -> 'file (1).pdf'
     """
     if not path.exists():

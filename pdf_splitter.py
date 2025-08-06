@@ -11,7 +11,6 @@ from CTkMessagebox import CTkMessagebox
 from pypdf import PdfReader, PdfWriter
 
 # --- Constants ---
-# NEW: Compile regex patterns once for efficiency.
 PAGE_PATTERN = re.compile(r"Page\s*:\s*(\d+)\s*of\s*(\d+)")
 PO_PATTERN = re.compile(r"Purchase Order No\.:\s*(\d+)")
 
@@ -80,11 +79,11 @@ def split_pdf_by_marker(
             text = page.extract_text() or ""
             page_match = PAGE_PATTERN.search(text)
 
-            # Split when we find the last page of a sub-document
+            # Split when find the last page of a sub-document
             if page_match and page_match.group(1) == page_match.group(2):
                 output_filename = f"Document_{files_created_count + 1}.pdf"
                 
-                # CHANGED: Search all pages in the buffer for the PO number
+                # Search all pages in the buffer for the PO number
                 po_number_found = None
                 for doc_page in pages_for_current_doc:
                     first_page_text = doc_page.extract_text() or ""
@@ -152,7 +151,7 @@ class App(ctk.CTk):
         self.run_button = ctk.CTkButton(self.main_frame, text="Split PDF", font=("", 14, "bold"), fg_color="#28a745", hover_color="#218838", command=self.run_process_in_thread)
         self.run_button.pack(pady=30, padx=20, fill="x", ipady=5)
         
-        # --- NEW: Progress Bar and Status Label ---
+        # --- Progress Bar and Status Label ---
         self.progress_bar = ctk.CTkProgressBar(self.main_frame, orientation="horizontal")
         self.progress_bar.set(0)
         self.progress_bar.pack(pady=5, padx=20, fill="x")
@@ -164,7 +163,7 @@ class App(ctk.CTk):
         filepath = ctk.filedialog.askopenfilename(filetypes=[("PDF Files", "*.pdf")])
         if filepath:
             self.input_path.set(filepath)
-            # CHANGED: Use theme-aware color
+            # Use theme-aware color
             label_color = ctk.ThemeManager.theme["CTkLabel"]["text_color"]
             self.input_label.configure(text=Path(filepath).name, text_color=label_color)
             self.reset_status()
@@ -173,13 +172,13 @@ class App(ctk.CTk):
         folderpath = ctk.filedialog.askdirectory()
         if folderpath:
             self.output_path.set(folderpath)
-            # CHANGED: Use theme-aware color
+            # Theme-aware color
             label_color = ctk.ThemeManager.theme["CTkLabel"]["text_color"]
             self.output_label.configure(text=folderpath, text_color=label_color)
             self.reset_status()
 
     def set_ui_state(self, is_enabled: bool):
-        """NEW: Helper to enable/disable controls during processing."""
+        """Helper to enable/disable controls during processing."""
         state = "normal" if is_enabled else "disabled"
         self.input_button.configure(state=state)
         self.output_button.configure(state=state)
@@ -187,17 +186,17 @@ class App(ctk.CTk):
         self.run_button.configure(text="Split PDF" if is_enabled else "Processing...")
 
     def reset_status(self):
-        """NEW: Resets progress bar and status text."""
+        """Resets progress bar and status text."""
         self.progress_bar.set(0)
         self.status_label.configure(text="")
 
     def update_progress(self, value: float):
-        """NEW: Callback to update progress bar from the thread."""
+        """Callback to update progress bar from the thread."""
         self.progress_bar.set(value / 100)
         self.status_label.configure(text=f"Processing... {value:.0f}%")
 
     def run_process_in_thread(self):
-        """NEW: Runs the main logic in a separate thread to keep the GUI responsive."""
+        """Runs the main logic in a separate thread to keep the GUI responsive."""
         input_pdf = self.input_path.get()
         output_dir = self.output_path.get()
 
@@ -217,7 +216,7 @@ class App(ctk.CTk):
         thread.start()
         
     def processing_worker(self, input_pdf: Path, output_dir: Path):
-        """NEW: The function that runs in the background thread."""
+        """The function that runs in the background thread."""
         success, message = split_pdf_by_marker(
             input_pdf,
             output_dir,

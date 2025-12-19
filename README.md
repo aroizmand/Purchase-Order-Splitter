@@ -31,7 +31,7 @@ To alter or contribute to this project, follow these steps to set up a local dev
 
     ```
     git clone "https://github.com/aroizmand/Purchase-Order-Splitter"
-    cd "https://github.com/aroizmand/Purchase-Order-Splitter"
+    cd Purchase-Order-Splitter
 
     ```
 
